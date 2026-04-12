@@ -80,6 +80,16 @@ export function formatRelative(value: DateInput): string {
   return rtf.format(Math.round(diffSec / divisors[unit]), unit)
 }
 
+/** Convierte un File a string base64 (data URL). */
+export function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 /**
  * Formatea un número como moneda paraguaya (Gs.).
  * Utiliza el locale es-PY. Sin decimales por defecto.

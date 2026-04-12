@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -11,6 +10,8 @@ import {
 import { productService } from "../services/product.service";
 import { PRODUCTS_QUERY_KEY } from "./useProducts";
 import { useCategories } from "@/features/categories/hooks/useCategories";
+import { useWeighableUnit } from "./useWeighableUnit";
+import { fileToBase64 } from "@/lib/format";
 
 export const PRODUCT_EMPTY_DEFAULTS: ProductFormValues = {
   name: "",
@@ -37,22 +38,20 @@ export function useProductForm() {
     defaultValues: PRODUCT_EMPTY_DEFAULTS,
   });
 
-  const isWeighable = form.watch("isWeighable");
-
-  useEffect(() => {
-    if (isWeighable) form.setValue("unit", "kg", { shouldValidate: true });
-  }, [isWeighable, form]);
+  const isWeighable = useWeighableUnit(form);
 
   const { data: categories, isLoading: loadingCategories } = useCategories();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: ({ image, ...values }: ProductFormValues) =>
-      productService.create({
+    mutationFn: async ({ image, ...values }: ProductFormValues) => {
+      const imageStr = image instanceof File ? await fileToBase64(image) : image || undefined
+      return productService.create({
         ...values,
         barcode: values.barcode || undefined,
-        image: image instanceof File ? undefined : image || undefined,
+        image: imageStr,
         description: values.description || undefined,
-      }),
+      })
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [PRODUCTS_QUERY_KEY] });
       toast.success("Producto creado");

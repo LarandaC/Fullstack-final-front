@@ -10,6 +10,8 @@ import { PRODUCTS_QUERY_KEY } from './useProducts'
 import { PRODUCT_EMPTY_DEFAULTS } from './useProductForm'
 import { type Product } from '../types/product.types'
 import { useCategories } from '@/features/categories/hooks/useCategories'
+import { useWeighableUnit } from './useWeighableUnit'
+import { fileToBase64 } from '@/lib/format'
 
 function productToFormValues(product: Product): ProductFormValues {
   return {
@@ -20,7 +22,7 @@ function productToFormValues(product: Product): ProductFormValues {
     category: typeof product.category === 'string' ? product.category : product.category._id,
     purchasePrice: product.purchasePrice,
     salePrice: product.salePrice,
-    image: undefined,
+    image: product.image,
     isWeighable: product.isWeighable,
     unit: product.unit,
     iva: product.iva,
@@ -38,11 +40,7 @@ export function useEditProduct(product: Product | undefined) {
     defaultValues: product ? productToFormValues(product) : PRODUCT_EMPTY_DEFAULTS,
   })
 
-  const isWeighable = form.watch('isWeighable')
-
-  useEffect(() => {
-    if (isWeighable) form.setValue('unit', 'kg', { shouldValidate: true })
-  }, [isWeighable, form])
+  const isWeighable = useWeighableUnit(form)
 
   useEffect(() => {
     if (product) form.reset(productToFormValues(product))
@@ -51,13 +49,15 @@ export function useEditProduct(product: Product | undefined) {
   const { data: categories, isLoading: loadingCategories } = useCategories()
 
   const { mutate, isPending } = useMutation({
-    mutationFn: ({ image, ...values }: ProductFormValues) =>
-      productService.update(product!._id, {
+    mutationFn: async ({ image, ...values }: ProductFormValues) => {
+      const imageStr = image instanceof File ? await fileToBase64(image) : image || undefined
+      return productService.update(product!._id, {
         ...values,
         barcode: values.barcode || undefined,
-        image: image instanceof File ? undefined : image || undefined,
+        image: imageStr,
         description: values.description || undefined,
-      }),
+      })
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [PRODUCTS_QUERY_KEY] })
       toast.success('Producto actualizado')

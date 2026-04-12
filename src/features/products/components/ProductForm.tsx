@@ -25,25 +25,40 @@ export function ProductForm({ product }: ProductFormProps) {
     : createHook
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit((values) => onSubmit(values))} className="space-y-6">
-        <ProductInfo form={form} categories={categories} loadingCategories={loadingCategories} />
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit((values) => onSubmit(values))}
+          className="space-y-6 max-w-4xl mx-auto"
+        >
+          <ProductInfo
+            form={form}
+            categories={categories}
+            loadingCategories={loadingCategories}
+          />
 
-        <PriceInfo form={form} />
+          <PriceInfo form={form} />
 
-        <InventoryInfo form={form} isWeighable={isWeighable} />
+          <InventoryInfo form={form} isWeighable={isWeighable} />
 
-        <AdditionalInfo form={form} />
+          <AdditionalInfo form={form} />
 
-        <div className="flex justify-end gap-3">
-          <Button type="button" variant="outline" onClick={() => navigate('/products')}>
-            Cancelar
-          </Button>
-          <Button type="submit" disabled={isPending}>
-            {isPending ? 'Guardando...' : isEditing ? 'Guardar cambios' : 'Crear producto'}
-          </Button>
-        </div>
-      </form>
-    </Form>
-  )
+          <div className="flex justify-end gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate("/products")}
+            >
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending
+                ? "Guardando..."
+                : isEditing
+                  ? "Guardar cambios"
+                  : "Crear producto"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+  );
 }

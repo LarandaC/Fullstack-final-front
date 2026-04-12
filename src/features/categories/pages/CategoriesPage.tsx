@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Plus } from 'lucide-react'
 import { DataTable } from '@/components/shared/datatable'
 import { Button } from '@/components/ui/button'
@@ -15,14 +15,14 @@ export default function CategoriesPage() {
   const [editTarget, setEditTarget] = useState<Category | undefined>(undefined)
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null)
 
-  const handleEdit = (category: Category) => {
+  const handleEdit = useCallback((category: Category) => {
     setEditTarget(category)
     setFormOpen(true)
-  }
+  }, [])
 
-  const handleDelete = (category: Category) => {
+  const handleDelete = useCallback((category: Category) => {
     setDeleteTarget(category)
-  }
+  }, [])
 
   const handleFormOpenChange = (open: boolean) => {
     setFormOpen(open)
@@ -31,8 +31,7 @@ export default function CategoriesPage() {
 
   const columns = useMemo(
     () => createCategoryColumns(handleEdit, handleDelete),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [handleEdit, handleDelete],
   )
 
   return (

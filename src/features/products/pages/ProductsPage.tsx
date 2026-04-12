@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { DataTable } from "@/components/shared/datatable";
@@ -16,23 +16,26 @@ export default function ProductsPage() {
 
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
 
+  const handleView = useCallback((product: Product) => navigate(`/products/${product._id}`), [navigate]);
+  const handleEdit = useCallback((product: Product) => navigate(`/products/${product._id}/edit`), [navigate]);
+  const handleDelete = useCallback((product: Product) => setDeleteTarget(product), []);
+
   const columns = useMemo(
-    () =>
-      createProductColumns(
-        (product) => navigate(`/products/${product._id}`),
-        (product) => navigate(`/products/${product._id}/edit`),
-        (product) => setDeleteTarget(product),
-      ),
-    [navigate],
+    () => createProductColumns(handleView, handleEdit, handleDelete),
+    [handleView, handleEdit, handleDelete],
   );
+
+  const total = data?.total ?? 0;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-start justify-between">
+        <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">Productos</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Gestión del catálogo de productos e inventario.
+          <p className="text-sm text-muted-foreground">
+            {total > 0
+              ? `${total} producto${total !== 1 ? "s" : ""} en el catálogo`
+              : "Gestión del catálogo de productos e inventario."}
           </p>
         </div>
         <Button onClick={() => navigate("/products/new")}>

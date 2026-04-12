@@ -25,19 +25,10 @@ export function createProductColumns(
       ),
     },
     {
-      accessorKey: "barcode",
-      header: () => <div className="text-center">Cód. barras</div>,
-      cell: ({ getValue }) => (
-        <span className="font-mono text-sm text-muted-foreground flex justify-center">
-          {getValue<string | undefined>() ?? "—"}
-        </span>
-      ),
-    },
-    {
       accessorKey: "name",
       header: () => <div className="text-center">Nombre</div>,
       cell: ({ getValue }) => (
-        <span className="font-medium flex justify-center">
+        <span className="font-semibold text-foreground flex justify-center">
           {getValue<string>()}
         </span>
       ),
@@ -47,18 +38,27 @@ export function createProductColumns(
       header: () => <div className="text-center">Categoría</div>,
       cell: ({ getValue }) => (
         <div className="flex justify-center">
-          <Badge variant="purple" className="capitalize">
+          <Badge variant="purple" className="capitalize font-medium">
             {getCategoryName(getValue<Product["category"]>())}
           </Badge>
         </div>
       ),
     },
     {
-      accessorKey: "purchasePrice",
-      header: () => <div className="text-center">P. compra</div>,
+      accessorKey: "salePrice",
+      header: () => <div className="text-center">Precio venta</div>,
       cell: ({ getValue }) => (
-        <span className="text-sm flex justify-center">
+        <span className="font-semibold text-foreground flex justify-center">
           {formatCurrency(getValue<number>())}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "iva",
+      header: () => <div className="text-center">IVA</div>,
+      cell: ({ getValue }) => (
+        <span className="text-sm text-muted-foreground flex justify-center">
+          {getValue<number>()}%
         </span>
       ),
     },
@@ -68,7 +68,7 @@ export function createProductColumns(
       cell: ({ row }) => (
         <div className="flex items-center justify-center gap-1.5">
           {row.original.isWeighable && (
-            <Scale size={14} className="text-muted-foreground" />
+            <Scale size={13} className="text-muted-foreground shrink-0" />
           )}
           <span className="text-sm">{UNIT_LABELS[row.original.unit]}</span>
         </div>
@@ -77,30 +77,17 @@ export function createProductColumns(
     {
       accessorKey: "minStock",
       header: () => <div className="text-center">Stock mín.</div>,
-      cell: ({ getValue }) => {
-        const stock = getValue<number>();
-        return (
-          <div className="flex justify-center">
-            <span
-              className={
-                stock === 0
-                  ? "text-color-red font-medium"
-                  : stock < 10
-                    ? "text-color-yellow font-medium"
-                    : "text-color-green font-medium"
-              }
-            >
-              {stock}
-            </span>
-          </div>
-        );
-      },
+      cell: ({ getValue }) => (
+        <span className="text-sm tabular-nums font-medium flex justify-center">
+          {getValue<number>()}
+        </span>
+      ),
     },
     {
       accessorKey: "maxStock",
       header: () => <div className="text-center">Stock máx.</div>,
       cell: ({ getValue }) => (
-        <span className="text-sm flex justify-center">
+        <span className="text-sm tabular-nums flex justify-center text-muted-foreground">
           {getValue<number>()}
         </span>
       ),

@@ -34,7 +34,7 @@ export default function ProductFormPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl items-center mx-auto">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate('/products')}>
           <ArrowLeft size={18} />

@@ -54,14 +54,15 @@ export default function ProductDetailsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-10">
+    <div className="space-y-6 max-w-7xl items-center mx-auto">
       <ProductDetailsHeader product={product} />
+
+      <ProductMainInfo product={product} />
 
       <ProductInventoryStats product={product} />
 
       <ProductFinanceSection product={product} />
 
-      <ProductMainInfo product={product} />
     </div>
   );
 }

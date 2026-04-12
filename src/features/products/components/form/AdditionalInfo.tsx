@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,8 +10,18 @@ interface AdditionalInfoProps {
 }
 
 export function AdditionalInfo({ form }: AdditionalInfoProps) {
-  const [preview, setPreview] = useState<string>('')
-  const imageFile = form.watch('image')
+  const imageValue = form.watch('image')
+  const [preview, setPreview] = useState<string>(
+    typeof imageValue === 'string' ? imageValue : ''
+  )
+
+  useEffect(() => {
+    if (typeof imageValue === 'string') {
+      setPreview(imageValue)
+    } else if (!imageValue) {
+      setPreview('')
+    }
+  }, [imageValue])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -79,7 +89,7 @@ export function AdditionalInfo({ form }: AdditionalInfoProps) {
                         <X className="w-4 h-4" />
                       </button>
                       <p className="text-xs text-muted-foreground mt-2">
-                        {imageFile instanceof File ? imageFile.name : 'Imagen cargada'}
+                        {imageValue instanceof File ? imageValue.name : 'Imagen cargada'}
                       </p>
                     </div>
                   )}

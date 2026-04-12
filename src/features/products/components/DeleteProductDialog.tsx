@@ -21,8 +21,8 @@ export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProdu
       toast.success('Producto eliminado')
       onOpenChange(false)
     },
-    onError: () => {
-      toast.error('No se pudo eliminar el producto')
+    onError: (error: Error) => {
+      toast.error(error.message ?? 'No se pudo eliminar el producto')
       onOpenChange(false)
     },
   })
