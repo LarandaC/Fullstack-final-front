@@ -9,12 +9,19 @@ import { UNIT_LABELS } from "../types/product.types";
 const getCategoryName = (category: Product["category"]) =>
   typeof category === "string" ? category : category.name;
 
+interface ProductColumnsOptions {
+  canViewPrices: boolean
+  canEdit: boolean
+  canDelete: boolean
+}
+
 export function createProductColumns(
   onView: (product: Product) => void,
   onEdit: (product: Product) => void,
   onDelete: (product: Product) => void,
+  options: ProductColumnsOptions,
 ): ColumnDef<Product, unknown>[] {
-  return [
+  const columns: ColumnDef<Product, unknown>[] = [
     {
       accessorKey: "sku",
       header: () => <div className="text-center">SKU</div>,
@@ -44,24 +51,32 @@ export function createProductColumns(
         </div>
       ),
     },
-    {
-      accessorKey: "salePrice",
-      header: () => <div className="text-center">Precio venta</div>,
-      cell: ({ getValue }) => (
-        <span className="font-semibold text-foreground flex justify-center">
-          {formatCurrency(getValue<number>())}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "iva",
-      header: () => <div className="text-center">IVA</div>,
-      cell: ({ getValue }) => (
-        <span className="text-sm text-muted-foreground flex justify-center">
-          {getValue<number>()}%
-        </span>
-      ),
-    },
+  ]
+
+  if (options.canViewPrices) {
+    columns.push(
+      {
+        accessorKey: "salePrice",
+        header: () => <div className="text-center">Precio venta</div>,
+        cell: ({ getValue }) => (
+          <span className="font-semibold text-foreground flex justify-center">
+            {formatCurrency(getValue<number>())}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "iva",
+        header: () => <div className="text-center">IVA</div>,
+        cell: ({ getValue }) => (
+          <span className="text-sm text-muted-foreground flex justify-center">
+            {getValue<number>()}%
+          </span>
+        ),
+      },
+    )
+  }
+
+  columns.push(
     {
       accessorKey: "unit",
       header: () => <div className="text-center">Unidad</div>,
@@ -102,11 +117,13 @@ export function createProductColumns(
             onEdit={() => onEdit(row.original)}
             onDelete={() => onDelete(row.original)}
             showView={true}
-            showEdit={true}
-            showDelete={true}
+            showEdit={options.canEdit}
+            showDelete={options.canDelete}
           />
         </div>
       ),
     },
-  ];
+  )
+
+  return columns
 }

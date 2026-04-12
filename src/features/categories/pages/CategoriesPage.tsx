@@ -6,10 +6,12 @@ import { useCategories } from '../hooks/useCategories'
 import { createCategoryColumns } from '../columns/category.columns'
 import { CategoryFormDialog } from '../components/CategoryFormDialog'
 import { DeleteCategoryDialog } from '../components/DeleteCategoryDialog'
+import { usePermissions } from '@/features/auth/hooks/usePermissions'
 import type { Category } from '../types/category.types'
 
 export default function CategoriesPage() {
   const { data: categories, isFetching } = useCategories()
+  const { canManageCategories, canDeleteCategory } = usePermissions()
 
   const [formOpen, setFormOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Category | undefined>(undefined)
@@ -30,8 +32,12 @@ export default function CategoriesPage() {
   }
 
   const columns = useMemo(
-    () => createCategoryColumns(handleEdit, handleDelete),
-    [handleEdit, handleDelete],
+    () =>
+      createCategoryColumns(handleEdit, handleDelete, {
+        canEdit: canManageCategories,
+        canDelete: canDeleteCategory,
+      }),
+    [handleEdit, handleDelete, canManageCategories, canDeleteCategory],
   )
 
   return (
@@ -43,10 +49,12 @@ export default function CategoriesPage() {
             Gestioná las categorías para clasificar los productos.
           </p>
         </div>
-        <Button onClick={() => setFormOpen(true)}>
-          <Plus size={16} />
-          Nueva categoría
-        </Button>
+        {canManageCategories && (
+          <Button onClick={() => setFormOpen(true)}>
+            <Plus size={16} />
+            Nueva categoría
+          </Button>
+        )}
       </div>
 
       <DataTable
@@ -67,7 +75,9 @@ export default function CategoriesPage() {
 
       <DeleteCategoryDialog
         open={deleteTarget !== null}
-        onOpenChange={(open) => { if (!open) setDeleteTarget(null) }}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null)
+        }}
         category={deleteTarget}
       />
     </div>

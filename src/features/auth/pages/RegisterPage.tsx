@@ -14,13 +14,21 @@ import {
   FormControl,
   FormMessage,
 } from '@/components/ui/form'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { ROLES, ROLE_LABELS } from '@/lib/roles'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: '', email: '', password: '', role: 'operario' },
+    defaultValues: { name: '', email: '', password: '', role: 'inventarista' as const },
   })
 
   const { mutate, isPending, error } = useMutation({
@@ -74,6 +82,31 @@ export default function RegisterPage() {
                 <FormControl>
                   <Input placeholder="••••••••" type="password" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rol</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Seleccionar rol" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.values(ROLES).map((role) => (
+                      <SelectItem key={role} value={role}>
+                        {ROLE_LABELS[role]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

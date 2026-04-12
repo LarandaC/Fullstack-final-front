@@ -1,8 +1,12 @@
+import type { UserRole } from '@/lib/roles'
+
+export type { UserRole }
+
 export interface User {
   id: string
   name: string
   email: string
-  role: 'admin' | 'operario'
+  role: UserRole
 }
 
 export interface LoginPayload {
@@ -14,7 +18,7 @@ export interface RegisterPayload {
   name: string
   email: string
   password: string
-  role?: 'admin' | 'operario'
+  role?: UserRole
 }
 
 export interface AuthResponse {

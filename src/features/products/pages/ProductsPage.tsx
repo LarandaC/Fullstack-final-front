@@ -7,22 +7,46 @@ import { useDataTablePagination } from "@/components/shared/datatable/hooks/useD
 import { useProducts } from "../hooks/useProducts";
 import { createProductColumns } from "../columns/product.columns";
 import { DeleteProductDialog } from "../components/DeleteProductDialog";
+import { usePermissions } from "@/features/auth/hooks/usePermissions";
 import type { Product } from "../types/product.types";
 
 export default function ProductsPage() {
   const navigate = useNavigate();
   const { pagination, onPaginationChange } = useDataTablePagination();
   const { data, isFetching } = useProducts(pagination);
+  const { canViewPrices, canCreateProduct, canEditProduct, canDeleteProduct } =
+    usePermissions();
 
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
 
-  const handleView = useCallback((product: Product) => navigate(`/products/${product._id}`), [navigate]);
-  const handleEdit = useCallback((product: Product) => navigate(`/products/${product._id}/edit`), [navigate]);
-  const handleDelete = useCallback((product: Product) => setDeleteTarget(product), []);
+  const handleView = useCallback(
+    (product: Product) => navigate(`/products/${product._id}`),
+    [navigate],
+  );
+  const handleEdit = useCallback(
+    (product: Product) => navigate(`/products/${product._id}/edit`),
+    [navigate],
+  );
+  const handleDelete = useCallback(
+    (product: Product) => setDeleteTarget(product),
+    [],
+  );
 
   const columns = useMemo(
-    () => createProductColumns(handleView, handleEdit, handleDelete),
-    [handleView, handleEdit, handleDelete],
+    () =>
+      createProductColumns(handleView, handleEdit, handleDelete, {
+        canViewPrices,
+        canEdit: canEditProduct,
+        canDelete: canDeleteProduct,
+      }),
+    [
+      handleView,
+      handleEdit,
+      handleDelete,
+      canViewPrices,
+      canEditProduct,
+      canDeleteProduct,
+    ],
   );
 
   const total = data?.total ?? 0;
@@ -38,10 +62,12 @@ export default function ProductsPage() {
               : "Gestión del catálogo de productos e inventario."}
           </p>
         </div>
-        <Button onClick={() => navigate("/products/new")}>
-          <Plus size={16} />
-          Nuevo producto
-        </Button>
+        {canCreateProduct && (
+          <Button onClick={() => navigate("/products/new")}>
+            <Plus size={16} />
+            Nuevo producto
+          </Button>
+        )}
       </div>
 
       <DataTable

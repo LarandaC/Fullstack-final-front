@@ -3,6 +3,7 @@ import { ArrowLeft, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProduct } from "../hooks/useProduct";
+import { usePermissions } from "@/features/auth/hooks/usePermissions";
 import ProductDetailsHeader from "../components/details/ProductDetailsHeader";
 import ProductFinanceSection from "../components/details/ProductFinanceSection";
 import ProductMainInfo from "../components/details/ProductMainInfo";
@@ -12,6 +13,7 @@ export default function ProductDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: product, isLoading, isError } = useProduct(id);
+  const { canViewPrices } = usePermissions();
 
   if (isLoading) {
     return (
@@ -61,8 +63,7 @@ export default function ProductDetailsPage() {
 
       <ProductInventoryStats product={product} />
 
-      <ProductFinanceSection product={product} />
-
+      {canViewPrices && <ProductFinanceSection product={product} />}
     </div>
   );
 }
