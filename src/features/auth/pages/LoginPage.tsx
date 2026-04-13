@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { loginSchema, type LoginFormValues } from '../schemas/auth.schema'
 import { authService } from '../services/auth.service'
@@ -82,12 +82,6 @@ export default function LoginPage() {
         </form>
       </Form>
 
-      <p className="text-muted-foreground text-sm text-center">
-        ¿No tenés cuenta?{' '}
-        <Link to="/register" className="text-foreground font-medium underline underline-offset-4">
-          Registrate
-        </Link>
-      </p>
     </div>
   )
 }

@@ -14,8 +14,22 @@ import {
 import { NavItemButton } from './NavItemButton'
 import { SidebarUserButton } from './SidebarUserButton'
 import { navGroups } from '../config/navigation'
+import { useAuthStore } from '@/features/auth/store/auth.store'
+import type { UserRole } from '@/lib/roles'
 
 export function AppSidebar() {
+  const userRole = useAuthStore((s) => s.user?.role)
+
+  const visibleGroups = navGroups
+    .filter((group) => !group.roles || group.roles.includes(userRole as UserRole))
+    .map((group) => ({
+      ...group,
+      items: group.items.filter(
+        (item) => !item.roles || item.roles.includes(userRole as UserRole),
+      ),
+    }))
+    .filter((group) => group.items.length > 0)
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="px-3 py-3 gap-0">
@@ -47,7 +61,7 @@ export function AppSidebar() {
       <SidebarSeparator className='h-2'/>
 
       <SidebarContent className="py-2">
-        {navGroups.map((group) => (
+        {visibleGroups.map((group) => (
           <SidebarGroup key={group.label} className="px-2">
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/40 px-2 mb-0.5">
               {group.label}

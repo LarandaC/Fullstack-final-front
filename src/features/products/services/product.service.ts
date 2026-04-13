@@ -8,6 +8,13 @@ import type {
 import type { PaginatedResponse } from '@/components/shared/datatable'
 
 export const productService = {
+  getAll: async (): Promise<Product[]> => {
+    const { data } = await api.get<PaginatedResponse<Product>>('/products', {
+      params: { page: 1, limit: 500 },
+    })
+    return data.data
+  },
+
   getPaginated: async (params: ProductsQueryParams): Promise<PaginatedResponse<Product>> => {
     const { data } = await api.get<PaginatedResponse<Product>>('/products', {
       params: { page: params.page + 1, limit: params.limit }, // TanStack es 0-based, API es 1-based

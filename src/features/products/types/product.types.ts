@@ -23,6 +23,7 @@ export interface Product {
   isWeighable: boolean;
   unit: UnitType;
   iva: IvaType;
+  stock: number;
   minStock: number;
   maxStock: number;
   createdAt: string;

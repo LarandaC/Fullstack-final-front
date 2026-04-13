@@ -90,22 +90,53 @@ export function createProductColumns(
       ),
     },
     {
-      accessorKey: "minStock",
-      header: () => <div className="text-center">Stock mín.</div>,
-      cell: ({ getValue }) => (
-        <span className="text-sm tabular-nums font-medium flex justify-center">
-          {getValue<number>()}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "maxStock",
-      header: () => <div className="text-center">Stock máx.</div>,
-      cell: ({ getValue }) => (
-        <span className="text-sm tabular-nums flex justify-center text-muted-foreground">
-          {getValue<number>()}
-        </span>
-      ),
+      accessorKey: "stock",
+      header: () => <div className="text-center">Stock actual</div>,
+      cell: ({ row }) => {
+        const { stock, minStock, maxStock } = row.original
+
+        type StockStatus = "empty" | "low" | "ok" | "over"
+        const status: StockStatus =
+          stock === 0
+            ? "empty"
+            : stock < minStock
+              ? "low"
+              : maxStock > 0 && stock > maxStock
+                ? "over"
+                : "ok"
+
+        const statusConfig: Record<StockStatus, { label: string; className: string }> = {
+          empty: {
+            label: "Sin stock",
+            className:
+              "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800",
+          },
+          low: {
+            label: "Stock bajo",
+            className:
+              "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800",
+          },
+          ok: {
+            label: "Normal",
+            className:
+              "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800",
+          },
+          over: {
+            label: "Sobrestock",
+            className:
+              "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800",
+          },
+        }
+
+        return (
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-base font-bold tabular-nums">{stock}</span>
+            <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${statusConfig[status].className}`}>
+              {statusConfig[status].label}
+            </Badge>
+          </div>
+        )
+      },
     },
     {
       id: "acciones",
