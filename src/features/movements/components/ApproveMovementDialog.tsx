@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { movementService } from '../services/movement.service'
 import { MOVEMENTS_QUERY_KEY } from '../hooks/useMovements'
+import { PRODUCTS_QUERY_KEY } from '@/features/products/hooks/useProducts'
 import type { Movement } from '../types/movement.types'
 import { ConfirmDialog } from '@/components/shared/dialogs'
 
@@ -18,12 +19,12 @@ export function ApproveMovementDialog({ open, onOpenChange, movement }: Props) {
     mutationFn: () => movementService.approveBaja(movement!._id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [MOVEMENTS_QUERY_KEY] })
+      queryClient.invalidateQueries({ queryKey: [PRODUCTS_QUERY_KEY] })
       toast.success('Baja aprobada. El stock fue descontado.')
       onOpenChange(false)
     },
     onError: (error: Error & { response?: { data?: { message?: string } } }) => {
       toast.error(error?.response?.data?.message ?? 'Error al aprobar la baja')
-      onOpenChange(false)
     },
   })
 

@@ -23,7 +23,6 @@ export function RejectMovementDialog({ open, onOpenChange, movement }: Props) {
     },
     onError: (error: Error & { response?: { data?: { message?: string } } }) => {
       toast.error(error?.response?.data?.message ?? 'Error al rechazar la baja')
-      onOpenChange(false)
     },
   })
 

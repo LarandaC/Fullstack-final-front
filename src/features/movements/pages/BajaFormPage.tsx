@@ -1,7 +1,7 @@
-import { ArrowLeft } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -9,9 +9,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { BajaItemsCard } from '../components/BajaItemsCard'
-import { useBajaForm } from '../hooks/useBajaForm'
+} from "@/components/ui/form";
+import { BajaItemsCard } from "../components/BajaItemsCard";
+import { useBajaForm } from "../hooks/useBajaForm";
 
 export default function BajaFormPage() {
   const {
@@ -25,7 +25,7 @@ export default function BajaFormPage() {
     handleRemove,
     submit,
     cancel,
-  } = useBajaForm()
+  } = useBajaForm();
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -37,14 +37,16 @@ export default function BajaFormPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Nueva baja</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            El movimiento quedará pendiente hasta ser aprobado por un administrador.
+            El movimiento quedará pendiente hasta ser aprobado por un
+            administrador.
           </p>
         </div>
       </div>
 
       {/* Info banner */}
       <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400">
-        El stock <strong>no se descuenta</strong> hasta que el administrador apruebe la baja.
+        El stock <strong>no se descuenta</strong> hasta que el administrador
+        apruebe la baja.
       </div>
 
       <Form {...form}>
@@ -61,8 +63,10 @@ export default function BajaFormPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Notas{' '}
-                      <span className="text-muted-foreground font-normal">(opcional)</span>
+                      Notas{" "}
+                      <span className="text-muted-foreground font-normal">
+                        (opcional)
+                      </span>
                     </FormLabel>
                     <FormControl>
                       <Textarea
@@ -96,11 +100,11 @@ export default function BajaFormPage() {
               Cancelar
             </Button>
             <Button type="submit" disabled={isPending}>
-              {isPending ? 'Enviando...' : 'Enviar para aprobación'}
+              {isPending ? "Enviando..." : "Enviar para aprobación"}
             </Button>
           </div>
         </form>
       </Form>
     </div>
-  )
+  );
 }

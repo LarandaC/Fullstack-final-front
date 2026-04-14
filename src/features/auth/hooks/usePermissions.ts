@@ -1,17 +1,8 @@
-import { useAuthStore } from '../store/auth.store'
-import { ROLES } from '@/lib/roles'
+import { useAuthStore } from "../store/auth.store";
+import { ROLES } from "@/lib/roles";
 
-/**
- * Hook centralizado para verificar permisos según el rol del usuario autenticado.
- *
- * Roles:
- * - admin       → acceso total
- * - supervisor  → gestiona productos (sin precios) y categorías, registra movimientos
- * - inventarista→ solo registra movimientos y ve stock (sin precios)
- * - financiero  → gestiona precios y ve sección financiera
- */
 export function usePermissions() {
-  const role = useAuthStore((s) => s.user?.role)
+  const role = useAuthStore((s) => s.user?.role);
 
   return {
     role,
@@ -40,5 +31,5 @@ export function usePermissions() {
 
     // Usuarios
     canManageUsers: role === ROLES.ADMIN,
-  }
+  };
 }

@@ -38,7 +38,13 @@ export const router = createBrowserRouter([
           { path: '/', element: <Navigate to="/products" replace /> },
           { path: '/products', element: <ProductsPage /> },
           { path: '/products/:id', element: <ProductDetailsPage /> },
-          { path: '/categories', element: <CategoriesPage /> },
+          // Categorías: solo admin y supervisor
+          {
+            element: <RoleGuard roles={[ROLES.ADMIN, ROLES.SUPERVISOR]} />,
+            children: [
+              { path: '/categories', element: <CategoriesPage /> },
+            ],
+          },
           { path: '/movements', element: <MovementsPage /> },
 
           // Compra: admin + financiero
